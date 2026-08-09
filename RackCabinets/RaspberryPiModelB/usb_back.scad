@@ -1,4 +1,4 @@
-include<../sixinch_library.scad>
+include<../fiveinch_library.scad>
 
 
   ///////////////////////////////
@@ -12,8 +12,8 @@ print_lid            = true;
 print_rear           = true;
 
 if(print_frontplate_sml){ // Frontplate //
-    square_hole        = [[60 ,3, 28, 4]];
-    round_hole         = [[105 ,5, 3.4],[110 ,5, 3.4]];
+    square_hole        = [[48 ,3, 28, 4]];
+    round_hole         = [[93 ,5, 3.4],[98 ,5, 3.4]];
     round_peg          = [];   
     screw_side_front   = [];
     screw_top          = [36];
@@ -32,10 +32,10 @@ if(print_handle_sml){ // Handle //
 if(print_cabinet_sml){ // Cabinet //  
     screw_bottom_front = [36];
     screw_side_front   = [];
-    round_peg          = [[40,35,6,screw_hole,6],
-                          [65,90,6,screw_hole,6],
-                          [32,90,6,0,6],
-                          [65,35,6,0,6]];
+    round_peg          = [[28,35,6,screw_hole,6],
+                          [53,90,6,screw_hole,6],
+                          [20,90,6,0,6],
+                          [53,35,6,0,6]];
     depth              = 98;
     units              = 2;
     cabinet(depth,units,screw_bottom_front,round_peg,screw_side_front);
@@ -50,7 +50,7 @@ if(print_lid){ // Lid //
 }
 
 if(print_rear){  // Back plate //    
-    square_hole  = [[17+5 ,5, 18, 15] , [38+5 ,5, 17, 17] , [70+8,5,10,3] ];
+    square_hole  = [[10 ,5, 18, 15] , [31 ,5, 17, 17] , [66,5,10,3] ];
     round_hole   = [];
     screw_top    = [36];//mm
     screw_bottom = [36];//mm
@@ -59,13 +59,3 @@ if(print_rear){  // Back plate //
     units        = 2;
     back_plate(units,depth,screw_top,screw_bottom,screw_side,square_hole,round_hole);
 }  
- 
-
-
-
-
-
-
-
-
-

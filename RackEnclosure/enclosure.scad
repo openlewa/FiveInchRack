@@ -15,9 +15,12 @@ Four_mm_screw = 3.8;
 Five_mm_screw = 4.8;
 
 //Constants, do not change !
-sixinch   = 155*1;       // cm = 6"  
-width     = 155-20-20;   // 11.5cm between rails
-unit      = (44.5/19)*6; // 1U = 14.05cm
+// Named 5"; front plate is a bit over 5" (127mm), same idea as the
+// original 6" rack using 155mm instead of 152.4mm.
+fiveinch  = 130*1;       // mm; slightly over 5"
+ear       = 20*1;        // mm; 20x20 profile / mounting ear
+width     = fiveinch-ear-ear; // 90mm between rails
+unit      = (44.5/19)*5; // 1U ≈ 11.71mm
 gauge     = 3*1;
 gauge_box = 2*1;
 slip      = 0.35*1;      // extra slip between parts
@@ -99,7 +102,7 @@ module trap(u){
 //2: chimney
 //3: closed
 module rack_end(type){    
-    width = sixinch+1; 
+    width = fiveinch+1; 
     difference(){
         union(){
             translate([1.25,1.25,1.25]){
@@ -159,7 +162,7 @@ module tophandle(){
                 rotate([0,45,0]){
                     extrusion(4,false,false,false);
                 }
-                translate([sixinch,20,0]){
+                translate([fiveinch,20,0]){
                     rotate([0,45,180]){
                         extrusion(4,false,false,false);
                     }
@@ -170,7 +173,7 @@ module tophandle(){
                 cube([200,200,20],center=true);
             }       
             translate([10,10,0]){handlescrew();}
-            translate([sixinch-10,10,0]){handlescrew();}        
+            translate([fiveinch-10,10,0]){handlescrew();}        
         }
         intersection(){
             translate([0,0,-27.4]){
@@ -193,7 +196,7 @@ module handlescrew(){
 
 
 module wedge(){
-    translate([sixinch/2,-10,15]){
+    translate([fiveinch/2,-10,15]){
         rotate([0,45+45/2,0]){
             cube([80,80,30]);
         }
@@ -296,9 +299,9 @@ module sidepanel(u,handle){
     difference(){
         baseplate(u);
         if(handle){
-              translate([(sixinch-80)/2,         9,-4]) { cube([80,20,10]);}
-              translate([(sixinch-80)/2,        19,-4]) { cylinder(d=20,h=10);}
-              translate([sixinch-(sixinch-80)/2,19,-4]) { cylinder(d=20,h=10);}
+              translate([(fiveinch-80)/2,         9,-4]) { cube([80,20,10]);}
+              translate([(fiveinch-80)/2,        19,-4]) { cylinder(d=20,h=10);}
+              translate([fiveinch-(fiveinch-80)/2,19,-4]) { cylinder(d=20,h=10);}
         }
     }
 }
@@ -310,19 +313,19 @@ module baseplate(u){
         union(){
             translate([1.25,1.25,1.25]){
                 minkowski(){
-                    cube([sixinch-2.5,unit*u-2.5,gauge-2.5]);
+                    cube([fiveinch-2.5,unit*u-2.5,gauge-2.5]);
                     sphere(r=1.25);
                 }
             }
         }
         //Rack mount holes
         translate([10-0.5,unit/2,-gauge/2])                 {cylinder(r=2.3,gauge*2);}
-        translate([sixinch-10+0.5,unit/2,-gauge/2])         {cylinder(r=2.3,gauge*2);}
+        translate([fiveinch-10+0.5,unit/2,-gauge/2])         {cylinder(r=2.3,gauge*2);}
         translate([10-0.5,u*unit-(unit/2),-gauge/2])        {cylinder(r=2.3,gauge*2);}
-        translate([sixinch-10+0.5,u*unit-(unit/2),-gauge/2]){cylinder(r=2.3,gauge*2);}
+        translate([fiveinch-10+0.5,u*unit-(unit/2),-gauge/2]){cylinder(r=2.3,gauge*2);}
         if(u>=5){
             translate([10-0.5,(u*unit)/2,-gauge/2])         {cylinder(r=2.3,gauge*2);}
-            translate([sixinch-10+0.5,(u*unit)/2,-gauge/2]) {cylinder(r=2.3,gauge*2);}
+            translate([fiveinch-10+0.5,(u*unit)/2,-gauge/2]) {cylinder(r=2.3,gauge*2);}
         }  
     }    
 }

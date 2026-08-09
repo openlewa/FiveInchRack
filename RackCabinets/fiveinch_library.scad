@@ -2,9 +2,12 @@
 $fn = 50*1;
 
 //Constants, do not change !
-sixinch   = 155*1;       // cm = 6"  
-width     = 155-20-20;   // 11.5cm between rails
-unit      = (44.5/19)*6; // 1U
+// Named 5"; front plate is a bit over 5" (127mm), same idea as the
+// original 6" rack using 155mm instead of 152.4mm.
+fiveinch  = 130*1;       // mm; slightly over 5"
+ear       = 20*1;        // mm; 20x20 profile / mounting ear
+width     = fiveinch-ear-ear; // 90mm between rails
+unit      = (44.5/19)*5; // 1U ≈ 11.71mm
 gauge     = 3*1;
 gauge_box = 2*1;
 
@@ -70,21 +73,21 @@ for(i=[0:8:80]){
         for(i=[0:len(screw_top)-1]){
             p = screw_top[i];
             translate([p,unit*u-gauge_box-4,gauge+dp+0.1]){rotate([0,180,0]){screw();}}
-            translate([sixinch-p,unit*u-gauge_box-4,gauge+dp+0.1]){rotate([0,180,0]){screw();}} 
+            translate([fiveinch-p,unit*u-gauge_box-4,gauge+dp+0.1]){rotate([0,180,0]){screw();}} 
         }
     }
     if(len(screw_bottom)>0){
         for(i=[0:len(screw_bottom)-1]){
             p = screw_bottom[i]; 
             translate([p,gauge_box+4     ,gauge+dp+0.1]){rotate([0,180,0]){screw();}}
-            translate([sixinch-p,    gauge_box+4    ,gauge+dp+0.1]){rotate([0,180,0]){screw();}} 
+            translate([fiveinch-p,    gauge_box+4    ,gauge+dp+0.1]){rotate([0,180,0]){screw();}} 
         }
     }
     
     if(len(screw_side)>0){
         for(i=[0:len(screw_side)-1]){
             p = screw_side[i];  
-            translate([sixinch-20-6,    unit*p    ,gauge+dp+0.1]){rotate([0,180,0]){screw();}} 
+            translate([fiveinch-20-6,    unit*p    ,gauge+dp+0.1]){rotate([0,180,0]){screw();}} 
             translate([20+6,    unit*p    ,gauge+dp+0.1]){rotate([0,180,0]){screw();}}   
         }
     }
@@ -159,13 +162,13 @@ module cabinet (dp,u,screw_bottom_front,round_peg,screw_side_front){
     difference(){
         box(dp,u,screw_bottom_front,round_peg,screw_side_front);
                         
-               translate([20,unit/2+3,sixinch-40]){ cylinder(d=gauge_box,h=41);}
-               translate([20,unit/2+0,sixinch-40]){ cylinder(d=gauge_box,h=41);}
-               translate([20,unit/2-3,sixinch-40]){ cylinder(d=gauge_box,h=41);}
+               translate([20,unit/2+3,fiveinch-40]){ cylinder(d=gauge_box,h=41);}
+               translate([20,unit/2+0,fiveinch-40]){ cylinder(d=gauge_box,h=41);}
+               translate([20,unit/2-3,fiveinch-40]){ cylinder(d=gauge_box,h=41);}
             
-               translate([20+width,unit/2+3,sixinch-40]){ cylinder(d=gauge_box,h=41);}
-               translate([20+width,unit/2+0,sixinch-40]){ cylinder(d=gauge_box,h=41);}
-               translate([20+width,unit/2-3,sixinch-40]){ cylinder(d=gauge_box,h=41);}
+               translate([20+width,unit/2+3,fiveinch-40]){ cylinder(d=gauge_box,h=41);}
+               translate([20+width,unit/2+0,fiveinch-40]){ cylinder(d=gauge_box,h=41);}
+               translate([20+width,unit/2-3,fiveinch-40]){ cylinder(d=gauge_box,h=41);}
                
               
         }
@@ -180,8 +183,8 @@ module box(dp,u,screw_bottom_front,round_peg,screw_side_front){
     difference(){
         translate([20,0,gauge]){
             difference(){
-                cube([115,u*unit,dp]);
-                translate([gauge_box,gauge_box,-1]){ cube([115-gauge_box*2,u*unit,dp+2]);}                        
+                cube([width,u*unit,dp]);
+                translate([gauge_box,gauge_box,-1]){ cube([width-gauge_box*2,u*unit,dp+2]);}                        
             }            
         }
         //CHIMNEY
@@ -192,9 +195,9 @@ module box(dp,u,screw_bottom_front,round_peg,screw_side_front){
     for(i=[0:len(screw_bottom_front)-1]){
         p = screw_bottom_front[i];
         translate([p+5,gauge_box,gauge]){rotate([0,-90,0]){screwtrap();}}
-        translate([sixinch-p+5,gauge_box,gauge]){rotate([0,-90,0]){screwtrap();}}        
+        translate([fiveinch-p+5,gauge_box,gauge]){rotate([0,-90,0]){screwtrap();}}        
         translate([p-5,gauge_box,gauge+dp-gauge_box]){rotate([0,90,0]){screwtrap();}}
-        translate([sixinch-p-5,gauge_box,gauge+dp-gauge_box]){rotate([0,90,0]){screwtrap();}}
+        translate([fiveinch-p-5,gauge_box,gauge+dp-gauge_box]){rotate([0,90,0]){screwtrap();}}
    }
     
    //Screw mounts on the side of cabinet
@@ -202,19 +205,19 @@ module box(dp,u,screw_bottom_front,round_peg,screw_side_front){
         for(i=[0:len(screw_side_front)-1]){
             p = screw_side_front[i]*unit;
                 translate([20+gauge_box,p-5,gauge]){rotate([0,-90,-90]){screwtrap();}}
-                translate([sixinch-20-gauge_box,p+5,gauge]){rotate([0,-90,90]){screwtrap();}}    
+                translate([fiveinch-20-gauge_box,p+5,gauge]){rotate([0,-90,90]){screwtrap();}}    
                 translate([20+gauge_box,p+5,gauge+dp-gauge_box]){rotate([0,90,-90]){screwtrap();}}
-                translate([sixinch-20-gauge_box,p-5,gauge+dp-gauge_box]){rotate([0,90,90]){screwtrap();}}    
+                translate([fiveinch-20-gauge_box,p-5,gauge+dp-gauge_box]){rotate([0,90,90]){screwtrap();}}    
         }
     }
     
     //Screw mounts for lid. Two on each side, three if dp>90
     translate([20+gauge_box,unit*u-gauge_box,gauge+10]){rotate([0,0,-90]){screwtrap();}}
     translate([20+gauge_box,unit*u-gauge_box,gauge+dp-10-10]){rotate([0,0,-90]){screwtrap();}}            
-    translate([sixinch-20-gauge_box,unit*u-gauge_box,gauge+10+10]){rotate([180,0,-90]){screwtrap();}}
-    translate([sixinch-20-gauge_box,unit*u-gauge_box,gauge+dp-10-10+10]){rotate([180,0,-90]){screwtrap();}}
+    translate([fiveinch-20-gauge_box,unit*u-gauge_box,gauge+10+10]){rotate([180,0,-90]){screwtrap();}}
+    translate([fiveinch-20-gauge_box,unit*u-gauge_box,gauge+dp-10-10+10]){rotate([180,0,-90]){screwtrap();}}
     if(dp>90){
-        translate([sixinch-20-gauge_box,unit*u-gauge_box,gauge+dp/2-5+10]){rotate([180,0,-90]){screwtrap();}}
+        translate([fiveinch-20-gauge_box,unit*u-gauge_box,gauge+dp/2-5+10]){rotate([180,0,-90]){screwtrap();}}
         translate([20+gauge_box,unit*u-gauge_box,gauge+dp/2-5]){rotate([0,0,-90]){screwtrap();}}
     }
         
@@ -222,7 +225,7 @@ module box(dp,u,screw_bottom_front,round_peg,screw_side_front){
     translate([20+gauge_box,unit*u-3-gauge_box,gauge]){
         linear_extrude(dp-gauge_box){polygon (points=[[0,0],[3,3],[0,3]]);}
     }
-    translate([sixinch-20-gauge_box,unit*u-3-gauge_box,gauge]){
+    translate([fiveinch-20-gauge_box,unit*u-3-gauge_box,gauge]){
         linear_extrude(dp-gauge_box){polygon (points=[[0,0],[-3,3],[0,3]]);}
     }
         
@@ -258,23 +261,23 @@ module lid(dp,u,screw_front,screw_back){
             for(i=[0:len(screw_front)-1]){                                
                 p = screw_front[i];                
                 translate([p-5,unit*u-gauge_box,gauge]){rotate([0,-90,180]){screwtrap();}}
-                translate([sixinch-p-5,unit*u-gauge_box,gauge]){rotate([0,-90,180]){screwtrap();}}
+                translate([fiveinch-p-5,unit*u-gauge_box,gauge]){rotate([0,-90,180]){screwtrap();}}
             }
         }        
         if(len(screw_back)>0){
             for(i=[0:len(screw_back)-1]){                                
                 p = screw_back[i];                                
                 translate([p+5,unit*u-gauge_box,gauge+dp-gauge_box]){rotate([0,90,180]){screwtrap();}}
-                translate([sixinch-p+5,unit*u-gauge_box,gauge+dp-gauge_box]){rotate([0,90,180]){screwtrap();}} 
+                translate([fiveinch-p+5,unit*u-gauge_box,gauge+dp-gauge_box]){rotate([0,90,180]){screwtrap();}} 
             }
         }
 
         //lid
         translate([20+gauge_box+slip,u*unit-gauge_box,gauge]){
-            cube([115-gauge_box*2-slip*2,gauge_box,dp]);
+            cube([width-gauge_box*2-slip*2,gauge_box,dp]);
         }    
         //back rest
-        translate([sixinch/2-40,u*unit-gauge_box-2,gauge+dp-2-gauge_box]){
+        translate([fiveinch/2-40,u*unit-gauge_box-2,gauge+dp-2-gauge_box]){
             cube([80,2,2]);
         }
     }        
@@ -282,10 +285,10 @@ module lid(dp,u,screw_front,screw_back){
     //Negative
     translate([20+gauge_box+4,unit*u+0.01  ,gauge+10+5]){rotate([90,0,0]){screw();}}
     translate([20+gauge_box+4,unit*u+0.01  ,gauge+dp-10-10+5]){rotate([90,0,0]){screw();}}    
-    translate([sixinch-20-gauge_box-4,unit*u+0.01   ,gauge+10+10-5]){rotate([90,0,0]){screw();}}
-    translate([sixinch-20-gauge_box-4,unit*u +0.01  ,gauge+dp-10-10+10-5]){rotate([90,0,0]){screw();}}
+    translate([fiveinch-20-gauge_box-4,unit*u+0.01   ,gauge+10+10-5]){rotate([90,0,0]){screw();}}
+    translate([fiveinch-20-gauge_box-4,unit*u +0.01  ,gauge+dp-10-10+10-5]){rotate([90,0,0]){screw();}}
     if(dp>90){
-        translate([sixinch-20-gauge_box-4,unit*u+0.01   ,gauge+dp/2-5+10-5]){rotate([90,0,0]){screw();}}    
+        translate([fiveinch-20-gauge_box-4,unit*u+0.01   ,gauge+dp/2-5+10-5]){rotate([90,0,0]){screw();}}    
         translate([20+gauge_box+4,unit*u+0.01   ,gauge+dp/2-5+5]){rotate([90,0,0]){screw();}}
     }
      chimney();
@@ -309,21 +312,21 @@ module frontholes(u,screw_top,screw_bottom_front,screw_side_front){
     for(i=[0:len(screw_bottom_front)-1]){
         p = screw_bottom_front[i];
         translate([p,gauge_box+4,-0.01]){screw();}
-        translate([sixinch-p,gauge_box+4,-0.01]){screw();}
+        translate([fiveinch-p,gauge_box+4,-0.01]){screw();}
     } 
     }    
     if(len(screw_side_front)>0){   
         for(i=[0:len(screw_side_front)-1]){
             p = screw_side_front[i]*unit;
             translate([20+gauge_box+4,p,-0.01]){screw();}
-            translate([sixinch-20-gauge_box-4,p,-0.01]){screw();}    
+            translate([fiveinch-20-gauge_box-4,p,-0.01]){screw();}    
         } 
     }   
     if(len(screw_top)>0){   
     for(i=[0:len(screw_top)-1]){
         p = screw_top[i];
         translate([p,unit*u-gauge_box-4,-0.01]){screw();}
-        translate([sixinch-p,unit*u-gauge_box-4,-0.01]){screw();}    
+        translate([fiveinch-p,unit*u-gauge_box-4,-0.01]){screw();}    
     }
     }
 }  
@@ -339,7 +342,7 @@ module handle(u,print){
         translate([0,-u*unit,8]){rotate([0,90,0]){handle1(u);}}
     }else{
         translate([22,2,0]){rotate([0,180,0]){handle1(u);}}
-        translate([sixinch-14,2,0]){rotate([0,180,0]){handle1(u);}}        
+        translate([fiveinch-14,2,0]){rotate([0,180,0]){handle1(u);}}        
     }        
 }
 
@@ -403,7 +406,7 @@ module rightbottomplate(t){
     difference(){
         bottomplate(t);
         translate([-1,-1,-1]){
-            cube([(sixinch+20)/2+1,sixinch+20+2,t+2]);
+            cube([(fiveinch+20)/2+1,fiveinch+20+2,t+2]);
         }
     }
 }
@@ -411,26 +414,26 @@ module rightbottomplate(t){
 module leftbottomplate(t){
     difference(){
         bottomplate(t);
-        translate([(sixinch+20)/2,-1,-1]){
-            cube([(sixinch+20)/2+1,sixinch+20+2,t+2]);
+        translate([(fiveinch+20)/2,-1,-1]){
+            cube([(fiveinch+20)/2+1,fiveinch+20+2,t+2]);
         }
        # translate([10,10,-1]){cylinder(r=2.5,h=base+2);}
-        translate([10,sixinch+20-10,-1]){cylinder(r=2.5,h=base+2);}
+        translate([10,fiveinch+20-10,-1]){cylinder(r=2.5,h=base+2);}
     
         
-        translate([(sixinch+20)/2-20,-1,2.1]){cube([40,sixinch+20+2,2]);}
+        translate([(fiveinch+20)/2-20,-1,2.1]){cube([40,fiveinch+20+2,2]);}
         
         }
     
     translate([0,0,base]){insideprofile(10);}
-    rotate([0,0,180]){translate([-20,-sixinch-20,base]){insideprofile(10);}}   
+    rotate([0,0,180]){translate([-20,-fiveinch-20,base]){insideprofile(10);}}   
 }
 
 
 module bottomplate(t){
 translate([1,1,0]){
     minkowski(){
-        cube([sixinch+20-2,sixinch+20-2,t-1]);
+        cube([fiveinch+20-2,fiveinch+20-2,t-1]);
         cylinder(r=1,h=1);
     }
 }
@@ -473,16 +476,16 @@ module frontplate(u,square_hole,round_hole,round_peg,screw_side_front,screw_top,
         //Handle holes
         translate([18,4.5,gauge-0.25]){rotate([180,0,0]){screw();}}
         translate([18,u*unit-4.5,gauge-0.25]){rotate([180,0,0]){screw();}}        
-        translate([sixinch-18,4.5,gauge-0.25]){rotate([180,0,0]){screw();}}
-        translate([sixinch-18,u*unit-4.5,gauge-0.25]){rotate([180,0,0]){screw();}}
+        translate([fiveinch-18,4.5,gauge-0.25]){rotate([180,0,0]){screw();}}
+        translate([fiveinch-18,u*unit-4.5,gauge-0.25]){rotate([180,0,0]){screw();}}
     } 
 
     //chassis support
     /*
     translate([20+gauge_box,gauge_box,gauge]){
         difference(){
-            cube([115-gauge_box*2,u*unit-2*gauge_box,3]);
-            translate([gauge_box,gauge_box,-1]){ cube([115-gauge_box*4,u*unit-gauge_box*4,5]);}
+            cube([width-gauge_box*2,u*unit-2*gauge_box,3]);
+            translate([gauge_box,gauge_box,-1]){ cube([width-gauge_box*4,u*unit-gauge_box*4,5]);}
         }
     } */
 
@@ -493,7 +496,7 @@ module frontplate(u,square_hole,round_hole,round_peg,screw_side_front,screw_top,
         translate([14,0,0]){
             cube([8,u*unit,gauge/2]);
         }
-        translate([sixinch-22,0,0]){
+        translate([fiveinch-22,0,0]){
             cube([8,u*unit,gauge/2]);
         }
     */
@@ -538,19 +541,19 @@ module baseplate(u,handle){
     union(){
         translate([1.25,1.25,1.25]){
             minkowski(){
-                cube([sixinch-2.5,unit*u-2.5,gauge-2.5]);
+                cube([fiveinch-2.5,unit*u-2.5,gauge-2.5]);
                 sphere(r=1.25);
             }
         }
     }
     //Rack mount holes
     translate([10-0.5,unit/2,-gauge/2])                 {cylinder(r=2.3,gauge*2);}
-    translate([sixinch-10+0.5,unit/2,-gauge/2])         {cylinder(r=2.3,gauge*2);}
+    translate([fiveinch-10+0.5,unit/2,-gauge/2])         {cylinder(r=2.3,gauge*2);}
     translate([10-0.5,u*unit-(unit/2),-gauge/2])        {cylinder(r=2.3,gauge*2);}
-    translate([sixinch-10+0.5,u*unit-(unit/2),-gauge/2]){cylinder(r=2.3,gauge*2);}
+    translate([fiveinch-10+0.5,u*unit-(unit/2),-gauge/2]){cylinder(r=2.3,gauge*2);}
     if(u>=5){
         translate([10-0.5,(u*unit)/2,-gauge/2])         {cylinder(r=2.3,gauge*2);}
-        translate([sixinch-10+0.5,(u*unit)/2,-gauge/2]) {cylinder(r=2.3,gauge*2);}
+        translate([fiveinch-10+0.5,(u*unit)/2,-gauge/2]) {cylinder(r=2.3,gauge*2);}
     }  
 }    
 }
