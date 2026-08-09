@@ -10,7 +10,7 @@ For pictures of the original 6" series, see:
  - http://www.thingiverse.com/thing:2084736
 
 The project is a scaled-down version of the familiar 19" rack standard (and of KronBjorn's 6" rack), with the following size:
- - 1U is about 11.71mm (`(44.5/19)*5`)
+ - 1U is about **14.05mm** (`(44.5/19)*6`) — same U height as the original 6" rack; only the width is reduced
  - The front plate is **130mm** wide (a bit over 5" / 127mm — same idea as the original using 155mm for 6")
  - The inside distance between the two vertical profiles is **90mm**
  - The ears protrude **20mm** (still sized for 20x20 extruded aluminium)

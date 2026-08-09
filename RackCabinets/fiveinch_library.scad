@@ -7,7 +7,7 @@ $fn = 50*1;
 fiveinch  = 130*1;       // mm; slightly over 5"
 ear       = 20*1;        // mm; 20x20 profile / mounting ear
 width     = fiveinch-ear-ear; // 90mm between rails
-unit      = (44.5/19)*5; // 1U ≈ 11.71mm
+unit      = (44.5/19)*6; // 1U ≈ 14.05mm (same as original 6" rack)
 gauge     = 3*1;
 gauge_box = 2*1;
 
