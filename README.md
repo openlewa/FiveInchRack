@@ -1,13 +1,13 @@
-# SixInchRack
+# FiveInchRack
 
-This is a project for 6" cabinets and rack enclusures. 
+This is a project for 5" cabinets and rack enclosures. 
 
 For pictures have a look here:
  - http://www.thingiverse.com/thing:1957436
  - http://www.thingiverse.com/thing:1936196
  - http://www.thingiverse.com/thing:2084736
 
-The project is a scaled down version of the familiar 19" rack standard, with the following size:
+The project is a scaled down version of the familiar 19" rack standard (and 6inch), with the following size:
  - 1U is 14mm
  - The front plate is 155mm wide
  - The inside distance between the two vertical profiles is 115mm
