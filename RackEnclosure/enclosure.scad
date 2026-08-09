@@ -8,6 +8,12 @@ part = "f"; // [a:Extrusion no holes,b:Extrusion front holes,c:Extrusion front a
 
 Units = 3;
 
+// Rack footprint depth (front-to-back). Width is fiveinch (130mm).
+Depth = 200;
+
+// 1mm raised lip on Grid / Chimney / Closed that nests into End open
+Stack_notch = "yes"; // [yes, no]
+
 //Hole size for 4mm screws or freedom unit equivalent
 Four_mm_screw = 3.8;
 
@@ -24,6 +30,7 @@ unit      = (44.5/19)*6; // 1U ≈ 14.05mm (same as original 6" rack)
 gauge     = 3*1;
 gauge_box = 2*1;
 slip      = 0.35*1;      // extra slip between parts
+stack_lip = 1*1;         // mm; nesting lip height for Stack_notch
 
 go();
 
@@ -69,6 +76,19 @@ module chimney() {
     }
 }
 
+// Raised 1mm rim that fits into the inner opening of End open
+module stack_notch_lip(end_w, end_d){
+    rim = 3;
+    translate([20+slip, 20+slip, gauge]){
+        difference(){
+            cube([end_w-40-2*slip, end_d-40-2*slip, stack_lip]);
+            translate([rim, rim, -0.1]){
+                cube([end_w-40-2*slip-2*rim, end_d-40-2*slip-2*rim, stack_lip+0.2]);
+            }
+        }
+    }
+}
+
 
 
 
@@ -101,32 +121,34 @@ module trap(u){
 //1: grid
 //2: chimney
 //3: closed
+// End plate is fiveinch (width) by Depth (front-to-back), +1mm like the original.
 module rack_end(type){    
-    width = fiveinch+1; 
+    end_w = fiveinch+1;
+    end_d = Depth+1;
     difference(){
         union(){
             translate([1.25,1.25,1.25]){
                 minkowski(){
-                    w = width-2.5;            
-                    cube([w, w, gauge-2.5]);                        
+                    cube([end_w-2.5, end_d-2.5, gauge-2.5]);
                     sphere(r=1.25);
                 }
             }
         }
         if(type==0 || type==1){
-            translate([20,20,-1]){ cube([width-40,width-40,gauge+2]);}  
+            translate([20,20,-1]){ cube([end_w-40, end_d-40, gauge+2]);}
         }
     
-        translate([10,10,-0.1])                { cylinder(d=5,h=10); cylinder(d1=10,d2=6,h=3.5);}
-        translate([width-10,10,-0.1])        { cylinder(d=5,h=10); cylinder(d1=10,d2=6,h=3.5);}
-        translate([10,width-10,-0.1])        { cylinder(d=5,h=10); cylinder(d1=10,d2=6,h=3.5);}
-        translate([width-10,width-10,-0.1]){ cylinder(d=5,h=10); cylinder(d1=10,d2=6,h=3.5);}  
+        translate([10,10,-0.1])             { cylinder(d=5,h=10); cylinder(d1=10,d2=6,h=3.5);}
+        translate([end_w-10,10,-0.1])       { cylinder(d=5,h=10); cylinder(d1=10,d2=6,h=3.5);}
+        translate([10,end_d-10,-0.1])       { cylinder(d=5,h=10); cylinder(d1=10,d2=6,h=3.5);}
+        translate([end_w-10,end_d-10,-0.1]) { cylinder(d=5,h=10); cylinder(d1=10,d2=6,h=3.5);}
   
         rotate([-90,0,0]){
             if(type==2){
-                translate([0,-5,0]){chimney();}
-                translate([0,-5,(width-29)/2]){chimney();}
-                translate([0,-5,width-29]){chimney();}
+                // Chimney rows along the depth axis
+                for(y=[0, (end_d-29)/2, end_d-29]){
+                    translate([0,-5,y]){chimney();}
+                }
             }
         }    
     }  
@@ -135,22 +157,26 @@ module rack_end(type){
             union(){
                 sz=8;
                 grid = 15;
-                for(i=[-grid*8:12:grid*8]){        
-                    translate([sz/2+i+70,sz/2+78,gauge/2]){
+                for(i=[-grid*10:12:grid*10]){        
+                    translate([sz/2+i+end_w/2, sz/2+end_d/2, gauge/2]){
                         rotate([0,0,45]){
-                        cube([2,width*1.5,gauge],center=true);        
+                            cube([2, max(end_w,end_d)*1.5, gauge],center=true);
                         }
                     }
-                    translate([sz/2+i+70,sz/2+82,gauge/2]){
+                    translate([sz/2+i+end_w/2, sz/2+end_d/2+4, gauge/2]){
                         rotate([0,0,-45]){
-                            cube([2,width*1.5,gauge],center=true);        
+                            cube([2, max(end_w,end_d)*1.5, gauge],center=true);
                         }
                     }
                 }
             }
-            translate([15,15,-1]){cube([125,125,10]);}
+            translate([15,15,-1]){cube([end_w-30, end_d-30, 10]);}
         }
-    }    
+    }
+    // Optional 1mm lip: nests into the inner opening of End open for stacking
+    if(Stack_notch=="yes" && (type==1 || type==2 || type==3)){
+        stack_notch_lip(end_w, end_d);
+    }
 }
 
 
@@ -296,36 +322,37 @@ module insideprofile(l){
 
 
 module sidepanel(u,handle){
+    // Side panel spans rack Depth (front-to-back)
     difference(){
-        baseplate(u);
+        baseplate(u, Depth);
         if(handle){
-              translate([(fiveinch-80)/2,         9,-4]) { cube([80,20,10]);}
-              translate([(fiveinch-80)/2,        19,-4]) { cylinder(d=20,h=10);}
-              translate([fiveinch-(fiveinch-80)/2,19,-4]) { cylinder(d=20,h=10);}
+              translate([(Depth-80)/2,         9,-4]) { cube([80,20,10]);}
+              translate([(Depth-80)/2,        19,-4]) { cylinder(d=20,h=10);}
+              translate([Depth-(Depth-80)/2,19,-4]) { cylinder(d=20,h=10);}
         }
     }
 }
 
 
 
-module baseplate(u){
+module baseplate(u, plate_w=fiveinch){
     difference(){
         union(){
             translate([1.25,1.25,1.25]){
                 minkowski(){
-                    cube([fiveinch-2.5,unit*u-2.5,gauge-2.5]);
+                    cube([plate_w-2.5,unit*u-2.5,gauge-2.5]);
                     sphere(r=1.25);
                 }
             }
         }
         //Rack mount holes
-        translate([10-0.5,unit/2,-gauge/2])                 {cylinder(r=2.3,gauge*2);}
-        translate([fiveinch-10+0.5,unit/2,-gauge/2])         {cylinder(r=2.3,gauge*2);}
-        translate([10-0.5,u*unit-(unit/2),-gauge/2])        {cylinder(r=2.3,gauge*2);}
-        translate([fiveinch-10+0.5,u*unit-(unit/2),-gauge/2]){cylinder(r=2.3,gauge*2);}
+        translate([10-0.5,unit/2,-gauge/2])                    {cylinder(r=2.3,gauge*2);}
+        translate([plate_w-10+0.5,unit/2,-gauge/2])            {cylinder(r=2.3,gauge*2);}
+        translate([10-0.5,u*unit-(unit/2),-gauge/2])           {cylinder(r=2.3,gauge*2);}
+        translate([plate_w-10+0.5,u*unit-(unit/2),-gauge/2])   {cylinder(r=2.3,gauge*2);}
         if(u>=5){
-            translate([10-0.5,(u*unit)/2,-gauge/2])         {cylinder(r=2.3,gauge*2);}
-            translate([fiveinch-10+0.5,(u*unit)/2,-gauge/2]) {cylinder(r=2.3,gauge*2);}
+            translate([10-0.5,(u*unit)/2,-gauge/2])            {cylinder(r=2.3,gauge*2);}
+            translate([plate_w-10+0.5,(u*unit)/2,-gauge/2])    {cylinder(r=2.3,gauge*2);}
         }  
     }    
 }

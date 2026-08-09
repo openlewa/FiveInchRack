@@ -13,7 +13,7 @@ $fn = 50*1;
 
 Part = "-"; // [a:All, b:FrontPlate, c:Cabinet, d:Lid, e:BackPlate, f:Handles]
 Units = 4;
-Depth = 98;
+Depth = 200;
 
 go();
 

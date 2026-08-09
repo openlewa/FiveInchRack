@@ -12,8 +12,10 @@ For pictures of the original 6" series, see:
 The project is a scaled-down version of the familiar 19" rack standard (and of KronBjorn's 6" rack), with the following size:
  - 1U is about **14.05mm** (`(44.5/19)*6`) — same U height as the original 6" rack; only the width is reduced
  - The front plate is **130mm** wide (a bit over 5" / 127mm — same idea as the original using 155mm for 6")
+ - Rack depth is **200mm** (enclosure ends are rectangular: ~131 × 201mm including the original +1mm clearance)
  - The inside distance between the two vertical profiles is **90mm**
  - The ears protrude **20mm** (still sized for 20x20 extruded aluminium)
+ - Optional **1mm stack notch** on End grid / chimney / closed: a raised lip that nests into the inner opening of End open for stacking
 
 It is designed for the 20x20 extruded aluminium profile, but a profile can also be printed.
 
