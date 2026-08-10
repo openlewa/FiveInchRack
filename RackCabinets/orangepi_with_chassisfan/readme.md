@@ -1,14 +1,7 @@
-This is a cabinet to fit the orangepi Zero with a chassisfan for the 5” rack series.
+This is a cabinet to fit the Orange Pi Zero with a chassis fan for the 5" rack series.
 
-It will fit in a rack like this:
+Coordinates are adjusted for the **130mm** front / **90mm** bay. The fan is 25x25x10mm.
 
-Other parts of the series:
-Or do a search for the tag 'sixinch' to see more units in the series.
+The front plate has 2 or 3mm holes for LEDs, or transparent filament used as optical fibres.
 
-The fan is 25x25x10mm.
-
-The front plate has 2 or 3mm holes for LED's, or transparent filament used as optical fibres.
- 
-License:
-6" Rack, Orange PI Zero, W/Chassis Fan
-by KronBjorn is licensed under the Creative Commons - Attribution license
+License: based on "6\" Rack, Orange PI Zero, W/Chassis Fan" by KronBjorn / community ports, Creative Commons Attribution (CC BY).

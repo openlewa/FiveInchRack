@@ -33,13 +33,17 @@ Download the `.scad` files from this repository. Currently the following compone
 
 - `RackCabinets/RaspberryPi3ModelB/` Raspberry Pi 3 Model B
 - `RackCabinets/RaspberryPiModelB/` Raspberry Pi Model B
+- `RackCabinets/OrangePi/orangepi_with_chassisfan.scad` Orange Pi with chassis fan
+- `RackCabinets/Drawer/drawer.scad` Drawer (longer, **200mm** deep to match the enclosure)
 
-Original 6" Thingiverse builds (for reference):
+Original 6" Thingiverse / community builds (for reference):
 - http://www.thingiverse.com/thing:2084736 Raspberry Pi 3 Model B
 - http://www.thingiverse.com/thing:1905998 Raspberry Pi B
+- http://www.thingiverse.com/thing:2205569 6" Rack, Drawer, Customizer
 - http://www.thingiverse.com/thing:2151578 Beaglebone Black
 - http://www.thingiverse.com/thing:2123108 DPS5005 power supply
 - http://www.thingiverse.com/thing:2105698 Beaglebone Black
+- https://github.com/pgrondek/SixInchRack/tree/master/RackCabinets/OrangePi Orange Pi chassis fan
 
 ## I want to make a new cabinet for my favourite module
 Start by inspecting this file for inspiration `_RackCabinets/RaspberryPiModelB/usb_back.scad_`, and take a look at the how to section below.
