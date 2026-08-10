@@ -33,8 +33,8 @@ Download the `.scad` files from this repository. Currently the following compone
 
 - `RackCabinets/RaspberryPi3ModelB/` Raspberry Pi 3 Model B
 - `RackCabinets/RaspberryPiModelB/` Raspberry Pi Model B
-- `RackCabinets/OrangePi/orangepi_with_chassisfan.scad` Orange Pi with chassis fan
-- `RackCabinets/Drawer/drawer.scad` Drawer (longer, **200mm** deep to match the enclosure)
+- `RackCabinets/orangepi_with_chassisfan/` Orange Pi with chassis fan
+- `RackCabinets/Drawer/` Drawer (longer, **200mm** deep to match the enclosure)
 
 Original 6" Thingiverse / community builds (for reference):
 - http://www.thingiverse.com/thing:2084736 Raspberry Pi 3 Model B
