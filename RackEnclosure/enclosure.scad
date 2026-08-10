@@ -70,7 +70,7 @@ module chimney() {
         translate([20 + (width-80)/2  +i,-1,20]){
             minkowski(){
                 cube([0.01,50,30]);    
-                sphere(d=2,h=1);        
+                sphere(d=2);        
             }
         }
     }
