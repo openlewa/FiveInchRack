@@ -6,7 +6,7 @@ Front plate width is **130mm** (FiveInchRack).
 
 The slip you need depends on how precise your printer is (`drawer_slip`, default 0.5mm).
 
-Optional **USB SD Holder by openlewa** (`USB_SD_Holder = yes`): upright holders on both long edges. Bottom: SD (not rotated) with microSD (90°) overlapping both SD edges. Above: USB-A + USB-C (90°, rounded) overlapping, centered and raised. Set `Holder_count` to override auto-fit.
+Optional **USB SD Holder by openlewa** (`USB_SD_Holder = yes`): upright holders on both long edges. **SD + USB-A + USB-C** (90°, rounded) overlap in the center; **microSD** (90°) overlaps both SD edges. Set `Holder_count` to override auto-fit.
 
 For the handle, you may need to shorten two screws, or find some really short ones.
 
