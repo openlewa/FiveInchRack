@@ -1,9 +1,8 @@
-include <../fiveinch_library.scad>
-
+// FiveInchRack drawer — Customizer parameters first, then library.
 // Adapted from KronBjorn "6\" Rack, Drawer, Customizer"
 // https://www.thingiverse.com/thing:2205569 (CC BY)
-// Sized for FiveInchRack: 130mm front, longer 200mm depth.
 
+/*[Drawer]*/
 //Which part to print
 Part = "b"; // [a:Frame, b:Drawer, c:Handles]
 
@@ -13,18 +12,54 @@ u = 2;
 //Depth of drawer (matches enclosure Depth)
 dp = 200;
 
-//Slip between drawer and frame
+//Slip between drawer and frame (do not name this "slip" — that is used by the library)
 drawer_slip = 0.5;
 
+/*[USB SD Holder by openlewa]*/
 // Optional media holders along both long edges
-// USB SD Holder by openlewa
 USB_SD_Holder = "yes"; // [yes, no]
 
 // How many holders per long edge (0 = auto-fit)
 Holder_count = 0;
 
 
+// Library (fiveinch geometry; sixinch_library.scad is a compatible alias)
+include <../fiveinch_library.scad>
+
+
+////////////////////////////////////////////////////////////
+// USB SD Holder by openlewa — constants before go()
+// SD + USB-A + USB-C (90°, rounded) overlap centered.
+// microSD (90°) centered between SD edge and USB edge,
+// and vertically centered with that group.
+////////////////////////////////////////////////////////////
+
+usb_a    = [13, 5];
+sd       = [25, 3];
+microsd  = [12, 2];
+usb_c    = [9, 3.5];
+usb_c_r  = 1.1;
+
+usb_c_rot   = [usb_c[1], usb_c[0]];      // [3.5, 9] after 90°
+microsd_rot = [microsd[1], microsd[0]];  // [2, 12] after 90°
+
+holder_margin = 1.5;
+holder_len    = sd[0] + 2*holder_margin;
+holder_w      = 10;
+slot_depth    = holder_w - 1.5;
+z_margin      = 8;
+
+center_band_h = max(sd[1], max(usb_a[1], usb_c_rot[1]));
+ms_overhang   = max(0, (microsd_rot[1] - center_band_h) / 2);
+holder_floor  = max(1.2, ms_overhang);
+holder_top    = max(1.2, ms_overhang);
+holder_h      = holder_floor + center_band_h + holder_top;
+holder_pitch  = holder_len + 2;
+
+
 go();
+
+
 module go(){
     if(Part=="a"){
         print_frame();
@@ -45,14 +80,16 @@ module print_frame(){
         translate([28,0,gauge]){cube([width-20+4,u*unit,dp]);}
         translate([30,2,gauge-1]){cube([width-20,u*unit-4,dp+2]);}
     }
+    // Rails between mounting ears (use width, not hardcoded 115)
     translate([20,0,gauge]){cube([width,2,dp]);}
     translate([20,u*unit-2,gauge]){cube([width,2,dp]);}
 }
 
 
 module print_drawer(){
+    // Center of front plate = fiveinch/2 == (width+40)/2
     half = (width+40)/2;
-    hhhd = (4*unit-9)/2; //half handle hole distance for 4U handle
+    hhhd = (4*unit-9)/2; // half handle hole distance for 4U handle
     intersection(){
         difference(){
             frontplate(u,[],[],[],[],[],[]);
@@ -80,45 +117,11 @@ module print_drawer(){
 
 
 module print_handles(){
-    // Uses a 4U handle for grip; cuts away the extra of the printed pair
     difference(){
         translate([30,0,0]){handle(4,true);}
         translate([42,-100,-1]){cube([20,100,10]);}
     }
 }
-
-
-////////////////////////////////////////////////////////////
-// USB SD Holder by openlewa
-// SD + USB-A + USB-C (90°, rounded) overlap centered.
-// microSD (90°) centered between SD edge and USB edge,
-// and vertically centered with that group.
-////////////////////////////////////////////////////////////
-
-usb_a    = [13, 5];
-sd       = [25, 3];
-microsd  = [12, 2];
-usb_c    = [9, 3.5];
-usb_c_r  = 1.1;
-
-// After 90°: narrow along edge, tall in Y
-usb_c_rot   = [usb_c[1], usb_c[0]];      // [3.5, 9]
-microsd_rot = [microsd[1], microsd[0]];  // [2, 12]
-
-holder_margin = 1.5;
-holder_len    = sd[0] + 2*holder_margin;
-holder_w      = 10;
-slot_depth    = holder_w - 1.5;
-z_margin      = 8;
-
-// Center band = tallest of SD / USB-A / USB-C
-center_band_h = max(sd[1], usb_a[1], usb_c_rot[1]);
-// microSD is taller; pad floor/top so it can sit height-centered
-ms_overhang  = max(0, (microsd_rot[1] - center_band_h) / 2);
-holder_floor = max(1.2, ms_overhang);
-holder_top   = max(1.2, ms_overhang);
-holder_h     = holder_floor + center_band_h + holder_top;
-holder_pitch = holder_len + 2;
 
 
 module holder_slot_box(w, h, d){
@@ -142,29 +145,24 @@ module usb_sd_holder_unit(){
     // USB SD Holder by openlewa
     xcut = holder_w - slot_depth;
 
-    // Vertical center of the SD/USB group
     y_mid  = holder_floor + center_band_h / 2;
     y_sd   = y_mid - sd[1] / 2;
     y_usba = y_mid - usb_a[1] / 2;
     y_usbc = y_mid - usb_c_rot[1] / 2;
-    // microSD hochgeschoben: gleiche Höhenmitte
     y_ms   = y_mid - microsd_rot[1] / 2;
 
     sd_z0  = (holder_len - sd[0]) / 2;
     usb_z0 = (holder_len - usb_a[0]) / 2;
-    // Gap between SD edge and USB-A edge on each side
     left_gap_z0  = sd_z0;
     left_gap_z1  = usb_z0;
     right_gap_z0 = usb_z0 + usb_a[0];
     right_gap_z1 = sd_z0 + sd[0];
-    // microSD between SD rand and USB rand zentrieren
     ms_left_z  = (left_gap_z0 + left_gap_z1) / 2 - microsd_rot[0] / 2;
     ms_right_z = (right_gap_z0 + right_gap_z1) / 2 - microsd_rot[0] / 2;
 
     difference(){
         cube([holder_w, holder_h, holder_len]);
 
-        // SD + USB-A + USB-C mittig überlappend
         translate([xcut, y_sd, sd_z0])
             holder_slot_box(sd[0], sd[1], slot_depth);
         translate([xcut, y_usba, usb_z0])
@@ -172,7 +170,6 @@ module usb_sd_holder_unit(){
         translate([xcut, y_usbc, (holder_len - usb_c_rot[0]) / 2])
             holder_slot_rounded(usb_c_rot[0], usb_c_rot[1], slot_depth, usb_c_r);
 
-        // microSD 90° zwischen SD-Rand und USB-Rand, höhenzentriert
         translate([xcut, y_ms, ms_left_z])
             holder_slot_box(microsd_rot[0], microsd_rot[1], slot_depth);
         translate([xcut, y_ms, ms_right_z])
@@ -189,7 +186,7 @@ module usb_sd_holders(){
     inner_w = width - 20 - 2*drawer_slip - 4;
     usable_z = dp - 2 - 2*z_margin;
     n_auto = max(1, floor((usable_z + 2) / holder_pitch));
-    n = Holder_count > 0 ? Holder_count : n_auto;
+    n = (Holder_count > 0) ? Holder_count : n_auto;
     span = n * holder_pitch - 2;
     z0 = dz0 + z_margin + max(0, (usable_z - span) / 2);
 

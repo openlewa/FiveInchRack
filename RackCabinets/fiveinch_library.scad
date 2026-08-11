@@ -5,6 +5,7 @@ $fn = 50*1;
 // Named 5"; front plate is a bit over 5" (127mm), same idea as the
 // original 6" rack using 155mm instead of 152.4mm.
 fiveinch  = 130*1;       // mm; slightly over 5"
+sixinch   = fiveinch;    // backward-compatible alias for older cabinets/drawer
 ear       = 20*1;        // mm; 20x20 profile / mounting ear
 width     = fiveinch-ear-ear; // 90mm between rails
 unit      = (44.5/19)*6; // 1U ≈ 14.05mm (same as original 6" rack)
@@ -308,21 +309,21 @@ module screw(){
 
 
 module frontholes(u,screw_top,screw_bottom_front,screw_side_front){
-    if(len(screw_bottom_front)>0){ 
+    if(!is_undef(screw_bottom_front) && len(screw_bottom_front)>0){ 
     for(i=[0:len(screw_bottom_front)-1]){
         p = screw_bottom_front[i];
         translate([p,gauge_box+4,-0.01]){screw();}
         translate([fiveinch-p,gauge_box+4,-0.01]){screw();}
     } 
     }    
-    if(len(screw_side_front)>0){   
+    if(!is_undef(screw_side_front) && len(screw_side_front)>0){   
         for(i=[0:len(screw_side_front)-1]){
             p = screw_side_front[i]*unit;
             translate([20+gauge_box+4,p,-0.01]){screw();}
             translate([fiveinch-20-gauge_box-4,p,-0.01]){screw();}    
         } 
     }   
-    if(len(screw_top)>0){   
+    if(!is_undef(screw_top) && len(screw_top)>0){   
     for(i=[0:len(screw_top)-1]){
         p = screw_top[i];
         translate([p,unit*u-gauge_box-4,-0.01]){screw();}
@@ -450,7 +451,7 @@ module frontplate(u,square_hole,round_hole,round_peg,screw_side_front,screw_top,
                    
         
         //Square holes
-        if(len(square_hole)>0){
+        if(!is_undef(square_hole) && len(square_hole)>0){
         for(i=[0:len(square_hole)-1]){
             x = square_hole[i][0];
             y = square_hole[i][1];
@@ -461,7 +462,7 @@ module frontplate(u,square_hole,round_hole,round_peg,screw_side_front,screw_top,
         }
         
        //Round holes
-        if(len(round_hole)>0){
+        if(!is_undef(round_hole) && len(round_hole)>0){
         for(i=[0:len(round_hole)-1]){
             x = round_hole[i][0];
             y = round_hole[i][1];
@@ -502,7 +503,7 @@ module frontplate(u,square_hole,round_hole,round_peg,screw_side_front,screw_top,
     */
 
     //Support pegs
-    if(len(round_peg)>0){
+    if(!is_undef(round_peg) && len(round_peg)>0){
         for(i=[0:len(round_peg)-1]){
             x = round_peg[i][0];
             y = round_peg[i][1];
