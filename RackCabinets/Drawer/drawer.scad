@@ -90,67 +90,86 @@ module print_handles(){
 
 ////////////////////////////////////////////////////////////
 // USB SD Holder by openlewa
-// Optional rows of media slots along both long drawer edges.
-// Each holder: USB-A (13x5) on the long edge, SD (25x3),
-// 2x microSD (12x2) on the short edges, USB-C in the center.
+// Upright rails on both long edges with stacked horizontal
+// openings (one per media type). USB-C has rounded corners.
 ////////////////////////////////////////////////////////////
 
-usb_a    = [13, 5];
+usb_a    = [13, 5];      // width along edge, height of opening
 sd       = [25, 3];
 microsd  = [12, 2];
 usb_c    = [9, 3.5];
+usb_c_r  = 1.1;          // corner radius for USB-C
 
 holder_margin = 1.5;
-holder_gap    = 1.0;
-// Long enough for: margin + µSD + gap + SD + gap + µSD + margin
-holder_len    = 2*holder_margin + microsd[1] + holder_gap + sd[0] + holder_gap + microsd[1];
-holder_w      = microsd[0] + 2*holder_margin;     // into drawer (X)
-holder_h      = 10;
-holder_pitch  = holder_len + 2;
+holder_sep    = 1.2;     // wall between stacked openings
 holder_floor  = 1.2;
-z_margin      = 8; // keep clear of front plate / back lip
+holder_top    = 1.2;
+holder_len    = sd[0] + 2*holder_margin;  // along long edge (Z)
+holder_w      = 10;                       // pocket depth into drawer (X)
+holder_h      = holder_floor + usb_a[1] + holder_sep
+              + usb_c[1] + holder_sep
+              + sd[1] + holder_sep
+              + microsd[1] + holder_sep
+              + microsd[1] + holder_top;
+holder_pitch  = holder_len + 2;
+slot_depth    = holder_w - 1.5;           // leave outer skin
+z_margin      = 8;
+
+
+// Horizontal slot cut: opens on +X face, extends -X into the body
+module holder_slot_box(w, h, d){
+    cube([d + 0.1, h, w]);
+}
+
+
+// USB-C opening with rounded corners (stadium rectangle)
+module holder_slot_usbc(w, h, d, r){
+    rr = min(r, h/2 - 0.05, w/2 - 0.05);
+    hull(){
+        translate([0, rr, rr]) rotate([0, 90, 0]) cylinder(r=rr, h=d + 0.1, $fn=24);
+        translate([0, h - rr, rr]) rotate([0, 90, 0]) cylinder(r=rr, h=d + 0.1, $fn=24);
+        translate([0, rr, w - rr]) rotate([0, 90, 0]) cylinder(r=rr, h=d + 0.1, $fn=24);
+        translate([0, h - rr, w - rr]) rotate([0, 90, 0]) cylinder(r=rr, h=d + 0.1, $fn=24);
+    }
+}
 
 
 module usb_sd_holder_unit(){
-    // Local coords: X = into drawer, Y = up, Z = along long edge
-    // USB SD Holder by openlewa
-    msd_z0 = holder_margin;
-    msd_z1 = holder_len - holder_margin - microsd[1];
-    sd_z   = msd_z0 + microsd[1] + holder_gap;
+    // Local: X = into drawer, Y = up, Z = along long edge
+    // Openings are horizontal and stacked in Y — USB SD Holder by openlewa
+    y1 = holder_floor;
+    y2 = y1 + usb_a[1] + holder_sep;
+    y3 = y2 + usb_c[1] + holder_sep;
+    y4 = y3 + sd[1] + holder_sep;
+    y5 = y4 + microsd[1] + holder_sep;
+    xcut = holder_w - slot_depth;
 
     difference(){
         cube([holder_w, holder_h, holder_len]);
 
-        // USB-A 13x5, mittig an langer (äusserer) Kante
-        translate([-0.1, holder_floor, (holder_len - usb_a[0]) / 2]){
-            cube([usb_a[1] + 0.1, holder_h, usb_a[0]]);
-        }
+        // Stack bottom → top: USB-A, USB-C (rounded), SD, microSD, microSD
+        translate([xcut, y1, (holder_len - usb_a[0]) / 2])
+            holder_slot_box(usb_a[0], usb_a[1], slot_depth);
 
-        // SD 25x3 between the microSD end slots, inner long edge
-        translate([holder_w - sd[1] - holder_margin, holder_floor, sd_z]){
-            cube([sd[1], holder_h, sd[0]]);
-        }
+        translate([xcut, y2, (holder_len - usb_c[0]) / 2])
+            holder_slot_usbc(usb_c[0], usb_c[1], slot_depth, usb_c_r);
 
-        // microSD 12x2 an beiden kurzen Kanten
-        translate([(holder_w - microsd[0]) / 2, holder_floor, msd_z0]){
-            cube([microsd[0], holder_h, microsd[1]]);
-        }
-        translate([(holder_w - microsd[0]) / 2, holder_floor, msd_z1]){
-            cube([microsd[0], holder_h, microsd[1]]);
-        }
+        translate([xcut, y3, (holder_len - sd[0]) / 2])
+            holder_slot_box(sd[0], sd[1], slot_depth);
 
-        // USB-C mittig
-        translate([(holder_w - usb_c[1]) / 2, holder_floor, (holder_len - usb_c[0]) / 2]){
-            cube([usb_c[1], holder_h, usb_c[0]]);
-        }
+        translate([xcut, y4, (holder_len - microsd[0]) / 2])
+            holder_slot_box(microsd[0], microsd[1], slot_depth);
+
+        translate([xcut, y5, (holder_len - microsd[0]) / 2])
+            holder_slot_box(microsd[0], microsd[1], slot_depth);
     }
 }
 
 
 module usb_sd_holders(){
     // USB SD Holder by openlewa
-    dx0 = 30 + drawer_slip + 2;                 // inner left X
-    dy0 = 2 + drawer_slip + 2;                  // inner floor Y
+    dx0 = 30 + drawer_slip + 2;
+    dy0 = 2 + drawer_slip + 2;
     dz0 = gauge;
     inner_w = width - 20 - 2*drawer_slip - 4;
     usable_z = dp - 2 - 2*z_margin;
@@ -162,12 +181,12 @@ module usb_sd_holders(){
     for(i = [0:n-1]){
         z = z0 + i * holder_pitch;
 
-        // Left long edge — outer wall at X=0 of the unit
+        // Left long edge — openings face +X (into drawer)
         translate([dx0, dy0, z]){
             usb_sd_holder_unit();
         }
 
-        // Right long edge — mirrored so outer wall sits on +X side
+        // Right long edge — mirrored, openings face -X (into drawer)
         translate([dx0 + inner_w, dy0, z]){
             mirror([1, 0, 0]){
                 usb_sd_holder_unit();
