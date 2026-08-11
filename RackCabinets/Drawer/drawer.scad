@@ -90,45 +90,44 @@ module print_handles(){
 
 ////////////////////////////////////////////////////////////
 // USB SD Holder by openlewa
-// Upright rails on both long edges with stacked horizontal
-// openings (one per media type). USB-C has rounded corners
-// and is rotated 90° so it overlaps the USB-A opening.
+// Bottom: SD (not rotated, low) with microSD (90°) at both
+// SD edges overlapping. Top: USB-A + USB-C (90°, rounded)
+// overlapping, centered and raised.
 ////////////////////////////////////////////////////////////
 
-usb_a    = [13, 5];      // width along edge, height of opening
+usb_a    = [13, 5];
 sd       = [25, 3];
 microsd  = [12, 2];
-usb_c    = [9, 3.5];     // native plug outline before 90° rotate
-usb_c_r  = 1.1;          // corner radius for USB-C
+usb_c    = [9, 3.5];
+usb_c_r  = 1.1;
 
-// USB-C after 90°: narrow along edge, tall in Y — overlaps USB-A
-usb_c_rot = [usb_c[1], usb_c[0]];  // [3.5, 9]
+// After 90°: narrow along edge, tall in Y
+usb_c_rot   = [usb_c[1], usb_c[0]];      // [3.5, 9]
+microsd_rot = [microsd[1], microsd[0]];  // [2, 12]
 
 holder_margin = 1.5;
-holder_sep    = 1.2;     // wall between stacked openings
+holder_sep    = 1.2;
 holder_floor  = 1.2;
 holder_top    = 1.2;
-holder_len    = sd[0] + 2*holder_margin;  // along long edge (Z)
-holder_w      = 10;                       // pocket depth into drawer (X)
-// Combined USB-A + rotated USB-C share one band (height = USB-C)
-usb_band_h    = usb_c_rot[1];
-holder_h      = holder_floor + usb_band_h + holder_sep
-              + sd[1] + holder_sep
-              + microsd[1] + holder_sep
-              + microsd[1] + holder_top;
-holder_pitch  = holder_len + 2;
-slot_depth    = holder_w - 1.5;           // leave outer skin
+usb_lift      = 1.5;     // raise USB-A/C band a bit
+holder_len    = sd[0] + 2*holder_margin;
+holder_w      = 10;
+slot_depth    = holder_w - 1.5;
 z_margin      = 8;
 
+sd_band_h  = microsd_rot[1];
+usb_band_h = usb_c_rot[1];
+holder_h   = holder_floor + sd_band_h + holder_sep + usb_lift
+           + usb_band_h + holder_top;
+holder_pitch = holder_len + 2;
 
-// Horizontal slot cut: opens on +X face, extends -X into the body
+
 module holder_slot_box(w, h, d){
     cube([d + 0.1, h, w]);
 }
 
 
-// USB-C opening with rounded corners (stadium rectangle)
-module holder_slot_usbc(w, h, d, r){
+module holder_slot_rounded(w, h, d, r){
     rr = min(r, h/2 - 0.05, w/2 - 0.05);
     hull(){
         translate([0, rr, rr]) rotate([0, 90, 0]) cylinder(r=rr, h=d + 0.1, $fn=24);
@@ -141,34 +140,36 @@ module holder_slot_usbc(w, h, d, r){
 
 module usb_sd_holder_unit(){
     // Local: X = into drawer, Y = up, Z = along long edge
-    // Openings are horizontal and stacked in Y — USB SD Holder by openlewa
-    y_usb = holder_floor;
-    y_sd  = y_usb + usb_band_h + holder_sep;
-    y_ms1 = y_sd + sd[1] + holder_sep;
-    y_ms2 = y_ms1 + microsd[1] + holder_sep;
-    xcut  = holder_w - slot_depth;
+    // USB SD Holder by openlewa
+    xcut = holder_w - slot_depth;
 
-    // Vertically center USB-A inside the taller rotated USB-C band
+    // SD band low; SD not rotated, flush to bottom of band
+    y_ms  = holder_floor;
+    y_sd  = y_ms;
+    // USB-A/C raised and centered
+    y_usb  = holder_floor + sd_band_h + holder_sep + usb_lift;
     y_usba = y_usb + (usb_band_h - usb_a[1]) / 2;
+
+    sd_z0 = (holder_len - sd[0]) / 2;
 
     difference(){
         cube([holder_w, holder_h, holder_len]);
 
-        // Overlapping USB-A + USB-C (90°): same pocket, pick either type
-        translate([xcut, y_usba, (holder_len - usb_a[0]) / 2])
-            holder_slot_box(usb_a[0], usb_a[1], slot_depth);
-
-        translate([xcut, y_usb, (holder_len - usb_c_rot[0]) / 2])
-            holder_slot_usbc(usb_c_rot[0], usb_c_rot[1], slot_depth, usb_c_r);
-
-        translate([xcut, y_sd, (holder_len - sd[0]) / 2])
+        // SD (not rotated), pushed down
+        translate([xcut, y_sd, sd_z0])
             holder_slot_box(sd[0], sd[1], slot_depth);
 
-        translate([xcut, y_ms1, (holder_len - microsd[0]) / 2])
-            holder_slot_box(microsd[0], microsd[1], slot_depth);
+        // microSD 90° at both SD edges, overlapping SD
+        translate([xcut, y_ms, sd_z0])
+            holder_slot_box(microsd_rot[0], microsd_rot[1], slot_depth);
+        translate([xcut, y_ms, sd_z0 + sd[0] - microsd_rot[0]])
+            holder_slot_box(microsd_rot[0], microsd_rot[1], slot_depth);
 
-        translate([xcut, y_ms2, (holder_len - microsd[0]) / 2])
-            holder_slot_box(microsd[0], microsd[1], slot_depth);
+        // USB-A + USB-C 90° overlapping, mittig, etwas hoch
+        translate([xcut, y_usba, (holder_len - usb_a[0]) / 2])
+            holder_slot_box(usb_a[0], usb_a[1], slot_depth);
+        translate([xcut, y_usb, (holder_len - usb_c_rot[0]) / 2])
+            holder_slot_rounded(usb_c_rot[0], usb_c_rot[1], slot_depth, usb_c_r);
     }
 }
 
@@ -188,12 +189,10 @@ module usb_sd_holders(){
     for(i = [0:n-1]){
         z = z0 + i * holder_pitch;
 
-        // Left long edge — openings face +X (into drawer)
         translate([dx0, dy0, z]){
             usb_sd_holder_unit();
         }
 
-        // Right long edge — mirrored, openings face -X (into drawer)
         translate([dx0 + inner_w, dy0, z]){
             mirror([1, 0, 0]){
                 usb_sd_holder_unit();
