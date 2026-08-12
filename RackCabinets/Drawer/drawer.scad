@@ -16,10 +16,10 @@ dp = 200;
 drawer_slip = 0.5;
 
 /*[USB SD Holder by openlewa]*/
-// Optional media holders along both long edges
+// Optional media holders along one long edge
 USB_SD_Holder = "yes"; // [yes, no]
 
-// How many holders per long edge (0 = auto-fit)
+// How many holders on that edge (0 = auto-fit)
 Holder_count = 0;
 
 
@@ -39,24 +39,24 @@ usb_a    = [13, 5];
 sd       = [25, 3];
 microsd  = [12, 2];
 usb_c    = [9, 3.5];
-usb_c_r  = 1.1;
+usb_c_r  = 1.5;
 
 usb_c_rot   = [usb_c[1], usb_c[0]];      // [3.5, 9] after 90°
 microsd_rot = [microsd[1], microsd[0]];  // [2, 12] after 90°
 
-holder_margin = 4.5;     // thicker rim beside microSD / SD ends
+holder_margin = 1.5;
 holder_len    = sd[0] + 2*holder_margin;
-holder_w      = 10;
+holder_w      = 12;
 slot_depth    = holder_w - 1.5;
 z_margin      = 8;
 
 // Band sized to the actual openings (flat face)
 center_band_h = max(sd[1], max(usb_a[1], usb_c_rot[1]));
 ms_overhang   = max(0, (microsd_rot[1] - center_band_h) / 2);
-holder_floor  = max(1.2, ms_overhang);
-holder_top    = max(1.2, ms_overhang);
+holder_floor  = max(6, ms_overhang);
+holder_top    = max(6, ms_overhang);
 holder_h      = holder_floor + center_band_h + holder_top;
-holder_pitch  = holder_len + 2;
+holder_pitch  = holder_len;
 
 
 go();
@@ -181,28 +181,19 @@ module usb_sd_holder_unit(){
 
 
 module usb_sd_holders(){
-    // USB SD Holder by openlewa
+    // USB SD Holder by openlewa — one long edge, units packed tight
     dx0 = 30 + drawer_slip + 2;
     dy0 = 2 + drawer_slip + 2;
     dz0 = gauge;
-    inner_w = width - 20 - 2*drawer_slip - 4;
     usable_z = dp - 2 - 2*z_margin;
-    n_auto = max(1, floor((usable_z + 2) / holder_pitch));
+    n_auto = max(1, floor(usable_z / holder_pitch));
     n = (Holder_count > 0) ? Holder_count : n_auto;
-    span = n * holder_pitch - 2;
+    span = n * holder_pitch;
     z0 = dz0 + z_margin + max(0, (usable_z - span) / 2);
 
     for(i = [0:n-1]){
-        z = z0 + i * holder_pitch;
-
-        translate([dx0, dy0, z]){
+        translate([dx0, dy0, z0 + i * holder_pitch]){
             usb_sd_holder_unit();
-        }
-
-        translate([dx0 + inner_w, dy0, z]){
-            mirror([1, 0, 0]){
-                usb_sd_holder_unit();
-            }
         }
     }
 }
