@@ -32,7 +32,7 @@ include <../fiveinch_library.scad>
 // SD + USB-A + USB-C (90°, rounded) overlap centered.
 // microSD (90°) centered between SD edge and USB edge,
 // and vertically centered with that group.
-// USB stick body clearance 18mm around USB-A (slot stays 13x5).
+// Flat face: USB-A stays 13x5; band height >= 18mm for stick body.
 ////////////////////////////////////////////////////////////
 
 usb_a    = [13, 5];      // connector opening — do not enlarge
@@ -40,19 +40,18 @@ sd       = [25, 3];
 microsd  = [12, 2];
 usb_c    = [9, 3.5];
 usb_c_r  = 1.1;
-usb_body = 18;           // USB stick thickness clearance around USB-A
+usb_body = 18;           // min clear band around USB-A for stick thickness
 
 usb_c_rot   = [usb_c[1], usb_c[0]];      // [3.5, 9] after 90°
 microsd_rot = [microsd[1], microsd[0]];  // [2, 12] after 90°
 
 holder_margin = 4.5;     // thicker rim beside microSD / SD ends
-holder_len    = sd[0] + 2*holder_margin;
-holder_w      = 12;
-slot_depth    = holder_w - 2;
-usb_relief_d  = 4;       // face recess depth for thick USB stick body
+holder_len    = max(sd[0] + 2*holder_margin, usb_body + 2*holder_margin);
+holder_w      = 10;
+slot_depth    = holder_w - 1.5;
 z_margin      = 8;
 
-// Band tall enough for 18mm stick clearance and microSD
+// Flat band tall enough for 18mm stick clearance (no face relief cut)
 center_band_h = max(usb_body, max(microsd_rot[1], usb_c_rot[1]));
 ms_overhang   = max(0, (microsd_rot[1] - center_band_h) / 2);
 holder_floor  = max(1.2, ms_overhang);
@@ -146,7 +145,7 @@ module holder_slot_rounded(w, h, d, r){
 
 module usb_sd_holder_unit(){
     // Local: X = into drawer, Y = up, Z = along long edge
-    // USB SD Holder by openlewa
+    // USB SD Holder by openlewa — flat face (no stick-body relief pocket)
     xcut = holder_w - slot_depth;
 
     y_mid  = holder_floor + center_band_h / 2;
@@ -154,11 +153,9 @@ module usb_sd_holder_unit(){
     y_usba = y_mid - usb_a[1] / 2;
     y_usbc = y_mid - usb_c_rot[1] / 2;
     y_ms   = y_mid - microsd_rot[1] / 2;
-    y_body = y_mid - usb_body / 2;
 
     sd_z0  = (holder_len - sd[0]) / 2;
     usb_z0 = (holder_len - usb_a[0]) / 2;
-    usb_cz = (holder_len - usb_a[0]) / 2 + usb_a[0] / 2;
     left_gap_z0  = sd_z0;
     left_gap_z1  = usb_z0;
     right_gap_z0 = usb_z0 + usb_a[0];
@@ -168,10 +165,6 @@ module usb_sd_holder_unit(){
 
     difference(){
         cube([holder_w, holder_h, holder_len]);
-
-        // 18mm stick-body relief around USB-A (connector hole stays 13x5)
-        translate([holder_w - usb_relief_d, y_body, usb_cz - usb_body / 2])
-            cube([usb_relief_d + 0.1, usb_body, usb_body]);
 
         translate([xcut, y_sd, sd_z0])
             holder_slot_box(sd[0], sd[1], slot_depth);
