@@ -16,8 +16,8 @@ dp = 200;
 drawer_slip = 0.5;
 
 /*[USB SD Holder by openlewa]*/
-// Optional media holders along one long edge
-USB_SD_Holder = "yes"; // [yes, no]
+// Optional media holders in one row at the drawer back (not the screw/front side)
+USB_SD_Holder = "no"; // [yes, no]
 
 // How many holders on that edge (0 = auto-fit)
 Holder_count = 0;
@@ -181,19 +181,23 @@ module usb_sd_holder_unit(){
 
 
 module usb_sd_holders(){
-    // USB SD Holder by openlewa — one long edge, units packed tight
+    // USB SD Holder by openlewa — one row at drawer back (away from front screws)
     dx0 = 30 + drawer_slip + 2;
     dy0 = 2 + drawer_slip + 2;
-    dz0 = gauge;
-    usable_z = dp - 2 - 2*z_margin;
-    n_auto = max(1, floor(usable_z / holder_pitch));
+    inner_w = width - 20 - 2*drawer_slip - 4;
+    z_back = gauge + dp - 2;
+    usable_x = inner_w - 2*z_margin;
+    n_auto = max(1, floor(usable_x / holder_pitch));
     n = (Holder_count > 0) ? Holder_count : n_auto;
     span = n * holder_pitch;
-    z0 = dz0 + z_margin + max(0, (usable_z - span) / 2);
+    x0 = dx0 + z_margin + max(0, (usable_x - span) / 2);
+    z0 = z_back - z_margin - holder_w;
 
     for(i = [0:n-1]){
-        translate([dx0, dy0, z0 + i * holder_pitch]){
-            usb_sd_holder_unit();
+        translate([x0 + i * holder_pitch, dy0, z0]){
+            rotate([0, -90, 0]){
+                usb_sd_holder_unit();
+            }
         }
     }
 }
