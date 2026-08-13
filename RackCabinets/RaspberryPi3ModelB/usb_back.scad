@@ -1,4 +1,4 @@
-include<../sixinch_library.scad>
+include<../fiveinch_library.scad>
 
 
   ///////////////////////////////
@@ -13,7 +13,7 @@ print_rear           = true;
 
 if(print_frontplate_sml){ // Frontplate //
     square_hole        = [];
-    round_hole         = [[65 ,7.5, 3.1],[69.5 ,7.5, 3.1]];
+    round_hole         = [[53 ,7.5, 3.1],[57.5 ,7.5, 3.1]];
     round_peg          = [];   
     screw_side_front   = [];
     screw_top          = [36];
@@ -30,7 +30,7 @@ if(print_handle_sml){ // Handle //
 }
 
 if(print_cabinet_sml){ // Cabinet //  
-    w=88;
+    w=76;
     h=70;
     screw_bottom_front = [36];
     screw_side_front   = [];
@@ -52,7 +52,7 @@ if(print_lid){ // Lid //
 }
 
 if(print_rear){  // Back plate //    
-    square_hole  = [[37 ,3, 17, 15] , [57 ,4, 15, 16] , [75,4,15,16] ];
+    square_hole  = [[25 ,3, 17, 15] , [45 ,4, 15, 16] , [63,4,15,16] ];
     round_hole   = [[6,5,6],[6,1,6], [24,3.5,3.5],[24,1.2,3.5]  ,[30,3.5,3.5],[30,1.2,3.5]];
     screw_top    = [36];//mm
     screw_bottom = [36];//mm
@@ -61,22 +61,3 @@ if(print_rear){  // Back plate //
     units        = 2;
     back_plate(units,depth,screw_top,screw_bottom,screw_side,square_hole,round_hole);
 }  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

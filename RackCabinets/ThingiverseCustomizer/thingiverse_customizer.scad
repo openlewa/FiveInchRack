@@ -4,7 +4,7 @@ $fn = 50*1;
 
 
    //////////////////////////////////////////////////
-  //  PASTE ALL OF: sixinch_library.scad IN HERE  //
+  //  PASTE ALL OF: fiveinch_library.scad IN HERE  //
  //   Thingiverse can only accept one file.      //
 //////////////////////////////////////////////////
 
@@ -13,7 +13,7 @@ $fn = 50*1;
 
 Part = "-"; // [a:All, b:FrontPlate, c:Cabinet, d:Lid, e:BackPlate, f:Handles]
 Units = 4;
-Depth = 115;
+Depth = 200;
 
 go();
 
